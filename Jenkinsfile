@@ -9,7 +9,6 @@ pipeline {
                         sh "scp -o StrictHostKeyChecking=no ansible/* root@188.166.4.98:/root/"
                         withCredentials([sshUserPrivateKey(credentialsId: 'ec2-server-key', keyFileVariable: 'keyfile', usernameVariable: 'user')]){
                             sh 'scp $keyfile root@188.166.4.98:~/josmbrio-key.pem'
-                            sh 'sh root@188.166.4.98 "ls -l"'
                         }
                     }
                 }
@@ -25,6 +24,7 @@ pipeline {
                     remote.allowAnyHosts = true
                     
                     withCredentials([sshUserPrivateKey(credentialsId: 'ansible-ssh-key', keyFileVariable: 'keyfile', usernameVariable: 'user')]){
+                            sh 'ssh -i $keyfile root@188.166.4.98 "ls -l"'
                             remote.user = user
                             remote.identityFile = keyfile
                             sshCommand remote: remote, command: "ls -l"
